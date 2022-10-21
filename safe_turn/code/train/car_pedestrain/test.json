@@ -1,0 +1,55 @@
+{
+    "annotations": [
+        {
+            "id": "f579bafc71f0988595ebb8150f8deffb85679030c2f8fee6a6b3e9d5848efd54",
+            "type": "bbox",
+            "attributes": {
+                "일반차량": "SUV/승합차"
+            },
+            "points": [
+                [
+                    1203,
+                    516
+                ],
+                [
+                    1589,
+                    516
+                ],
+                [
+                    1589,
+                    768
+                ],
+                [
+                    1203,
+                    768
+                ]
+            ],
+            "label": "일반차량"
+        }
+    ],
+    "attributes": {},
+    "file_id": "600007048ef3aaadcb8adb7a",
+    "filename": "20201125_서울특별시_0_강남구_맑음_주간_실외_front_0037414.png",
+    "parent_path": "/20201125_서울특별시_front_5_0007",
+    "last_modifier_id": "602275199d8e92ee72f68828",
+    "info": {
+        "date_created": "20201125",
+        "location_si": "서울특별시",
+        "location_gun": "0",
+        "location_gu": "강남구",
+        "weather": "맑음",
+        "time": "주간",
+        "type": "실외"
+    },
+    "camera": {
+        "type": "front",
+        "channel": "1",
+        "pixel": "2M",
+        "angle": "120",
+        "resolution_width": "1920",
+        "resolution_height": "1080",
+        "framerate": "30",
+        "location_height": "120",
+        "location_distance": "200"
+    }
+}
