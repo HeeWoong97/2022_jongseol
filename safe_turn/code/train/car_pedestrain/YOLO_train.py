@@ -3,14 +3,14 @@
 
 # **Mount drive**
 
-# In[1]:
+# In[2]:
 
 
 from google.colab import drive
 drive.mount('/content/drive')
 
 
-# In[2]:
+# In[3]:
 
 
 import os
@@ -46,7 +46,7 @@ print("valid txt2: ", len(valid_txt_list2))
 
 # **Move directory**
 
-# In[ ]:
+# In[4]:
 
 
 get_ipython().run_line_magic('cd', '"/content/drive/MyDrive/Colab Notebooks/yolov5"')
@@ -54,7 +54,7 @@ get_ipython().run_line_magic('cd', '"/content/drive/MyDrive/Colab Notebooks/yolo
 
 # **Install requirements**
 
-# In[ ]:
+# In[5]:
 
 
 get_ipython().system('pip install -U -r requirements.txt')
@@ -62,7 +62,7 @@ get_ipython().system('pip install -U -r requirements.txt')
 
 # **Check torch version**
 
-# In[ ]:
+# In[6]:
 
 
 import torch
@@ -70,20 +70,12 @@ import torch
 print('torch %s %s' % (torch.__version__, torch.cuda.get_device_properties(0) if torch.cuda.is_available() else 'CPU'))
 
 
-# **Train dataset1**
+# **Train dataset**
 
-# In[ ]:
+# In[7]:
 
 
 get_ipython().system('python train.py --img 640 --batch 16 --epochs 30 --data car_pedestrain_data.yaml --weights yolov5s.pt --cache')
-
-
-# **Train dataset2**
-
-# In[ ]:
-
-
-get_ipython().system('python train.py --img 640 --batch 16 --epochs 30 --data car_pedestrain_data1.yaml --weights runs/train/exp43/weights/best.pt --cache')
 
 
 # In[ ]:

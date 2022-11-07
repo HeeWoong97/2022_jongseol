@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 from google.colab import drive
 drive.mount('/content/drive')
 
 
-# In[2]:
+# In[ ]:
 
 
 get_ipython().run_line_magic('cd', '"/content/drive/MyDrive/Colab Notebooks/yolov5"')
 
 
-# In[3]:
+# In[ ]:
 
 
 import torch
@@ -29,11 +29,11 @@ import os
 import math
 
 
-# In[4]:
+# In[ ]:
 
 
-PED_MODEL_PATH = '/content/drive/MyDrive/Colab Notebooks/yolov5/runs/train/exp47/weights/best.pt'
-CROSS_MODEL_PATH = '/content/drive/MyDrive/Colab Notebooks/yolov5/runs/train/exp54/weights/best.pt'
+PED_MODEL_PATH = '/content/drive/MyDrive/Colab Notebooks/yolov5/runs/train/exp72/weights/best.pt'
+CROSS_MODEL_PATH = '/content/drive/MyDrive/Colab Notebooks/yolov5/runs/train/exp70/weights/best.pt'
 
 TEST_VIDEO_PATH = '/content/drive/MyDrive/Colab Notebooks/test-video/'
 TEST_VIDEO_SAVE_PATH = TEST_VIDEO_PATH + 'output/'
@@ -46,29 +46,26 @@ classes = None
 agnostic_nms = False
 
 
-# In[5]:
+# In[ ]:
 
 
 ped_device = torch.device('cpu')
 print(ped_device)
 ped_ckpt = torch.load(PED_MODEL_PATH, map_location = ped_device)
-# print(ped_ckpt)
 ped_model = ped_ckpt['ema' if ped_ckpt.get('cma') else 'model'].float().fuse().eval()
-# print(type(ped_model))
 ped_class_names = ['보행자', '차량']
 ped_stride = int(ped_model.stride.max())
-# print(ped_stride)
 ped_colors = ((50, 50, 50), (255, 0, 0))
 
 
-# In[6]:
+# In[ ]:
 
 
 cross_device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 print(cross_device)
 cross_ckpt = torch.load(CROSS_MODEL_PATH, map_location = cross_device)
 cross_model = cross_ckpt['ema' if cross_ckpt.get('cma') else 'model'].float().fuse().eval()
-cross_class_names = ['보행자', '차량', '횡단보도', '빨간불', '초록불']
+cross_class_names = ['횡단보도', '빨간불', '초록불']
 cross_stride = int(cross_model.stride.max())
 cross_colors = ((50, 50, 50), (255, 0, 0), (255, 0, 255), (0, 0, 255), (0, 255, 0))
 
@@ -76,7 +73,7 @@ cross_colors = ((50, 50, 50), (255, 0, 0), (255, 0, 255), (0, 0, 255), (0, 255, 
 # In[ ]:
 
 
-img = cv2.imread(os.path.join(TEST_VIDEO_PATH, 'test1.png') , cv2.IMREAD_COLOR)
+img = cv2.imread(os.path.join(TEST_VIDEO_PATH, 'test5.jpeg') , cv2.IMREAD_COLOR)
 
 H, W, _ = img.shape
 print(H,W,sep=',')
@@ -100,40 +97,8 @@ def detect(annotator, img, stride, device, model, class_names, colors):
     img_input /= 255.
     img_input = img_input.unsqueeze(0)
 
-    pred = model(img_input, augment = False, visualize = False)
-
-    print("len(pred): ", len(pred))
-    print("len(pred[0]): ", len(pred[0]))
-    print("len(pred[1]): ", len(pred[1]))
-
-    print("type(pred[0]): ", type(pred[0]))
-    print("type(pred[1]): ", type(pred[1]))
-
-    print("pred[1][0].shape: ", pred[1][0].shape)
-    print("pred[1][1].shape: ", pred[1][1].shape)
-    print("pred[1][2].shape: ", pred[1][2].shape)
-
-    print("type(pred[1][0]): ", type(pred[1][0]))
-    print("type(pred[1][1]): ", type(pred[1][1]))
-    print("type(pred[1][2]): ", type(pred[1][2]))
-
-    pred = pred[0]
- 
-    # print(non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det = max_det))
-    
-    print("pred[0]: ", pred)
-    print("pred[0].shape: ", pred.shape)
-    print("pred[0].shape[0]: ", pred.shape[0])
-    print("pred[0].shape[1]: ", pred.shape[1])
-    print("pred[0].shape[2]: ", pred.shape[2])
-  
-    a = [torch.zeros((0, 6), device=ped_device)] * pred.shape[0]
-    print("a: ", a)
-
+    pred = model(img_input, augment = False, visualize = False)[0]
     pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det = max_det)[0]
-
-    print('\n')
-
     pred = pred.cpu().numpy()
 
     pred[:, :4] = scale_coords(img_input.shape[2:], pred[:, :4], img.shape).round()
@@ -142,8 +107,7 @@ def detect(annotator, img, stride, device, model, class_names, colors):
         class_name = class_names[int(p[5])]
         x1, y1, x2, y2 = p[:4]
         
-        if int(p[5]) == 2:
-            print(x1, y1, x2, y2, sep=',')
+        if int(p[5]) == 0:
             cx1, cy1, cx2, cy2 = x1, y1, x2, y2
         annotator.box_label([x1, y1, x2, y2], '%s %d' % (class_name, float(p[4]) * 100), color=colors[int(p[5])])
 
@@ -158,9 +122,9 @@ detect(annotator, img, cross_stride, cross_device, cross_model, cross_class_name
 
 result_img = annotator.result()
 
-print(cx1, cy1, cx2, cy2, sep=', ')
+print("crosswalk", cx1, cy1, cx2, cy2, sep=', ')
 
-# cv2_imshow(result_img)
+cv2_imshow(result_img)
 
 
 # ### opencv 
@@ -178,6 +142,8 @@ def fixColor(img):
 
 
 cut_img = img[int(cy1):int(cy2), int(cx1):int(cx2)].copy()
+
+cv2_imshow(cut_img)
 
 
 # #### hsv method
@@ -234,7 +200,7 @@ cv2_imshow(line_result)
 gray = cv2.cvtColor(cut_img, cv2.COLOR_BGR2GRAY)
 blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
-canny = cv2.Canny(blurred, 30, 300)
+canny = cv2.Canny(blurred, 150, 270)
 
 cv2_imshow(canny)
 
