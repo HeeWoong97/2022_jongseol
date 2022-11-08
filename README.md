@@ -33,14 +33,50 @@
         * 데이터를 학습시키거나 분리하는 코드
         * detect/
             * 횡단보도 영상에서 차량, 보행자, 횡단보도, 신호등을 인식하여 차량에게 안전한 회전 시점을 알려줌
+            * cross_detect.py
+                * 영상처리를 통해 입력 영상에서 횡단보도를 찾아보는 코드(1)
+                * HSV, houghlinep등의 방법을 사용
+            * cross_test.py
+                * 영상처리를 통해 입력 영상에서 횡단보도를 찾아보는 코드(2)
+                * 이미지 화질 변경, find contour등의 함수 사용
+            * detect.py
+                * 입력 영상에서 횡단보도 인식을 통해 보행자, 차량에게 안전 정보를 알려주는 코드
+                * 인식 모델로는 횡단보도, 차량 인식 모델을 각각 사용한다
+                * 핵심 코드
+            * detect_show_split.py
+                * 입력 영상에서 횡단보도 인식을 통해 보행자, 차량에게 안전 정보를 알려주는 코드
         * train/
             * 모델을 학습하는 코드
             * car_pedestrain/, cross/ 폴더로 나뉘어 각각 알맞는 데이터셋을 학습함
             * 주요 코드
-                * car_pedestrain/YOLO_train.py
-                    * 차량, 보행자 인식 모델 학습
-                * cross/YOLO_train.py
-                    * 횡단보도, 빨간불, 초록불 인식 모델 학습
+                * car_pedestrain/
+                    * 차량, 보행자 인식 모델 관련
+                    * YOLO_train.py
+                        * haha
+                    * convert.py
+                        * hoho
+                    * convert_train.py
+                        * huhu
+                    * convert_valid.py
+                        * hihi
+                    * draw_box.py
+                        * hyhy
+                * cross/
+                    * 횡단보도, 빨간불, 초록불 인식 모델 관련
+                    * YOLO_train.py
+                        * haha
+                    * convert_class.py
+                        * hoho
+                    * convert_train.py
+                        * huhu
+                    * convert_valid.py
+                        * hihi
+                    * preprocess.py
+                        * hwhw
+                    * split.py
+                        * jwjw
     * data/
         * yolo를 통한 학습 시 데이터들의 정보를 알려주는 파일들
         * 각 데이터셋의 경로가 담긴 yaml형식의 파일들
+***
+## 실행 결과
