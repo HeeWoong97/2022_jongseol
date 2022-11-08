@@ -106,7 +106,7 @@ def detect(img, stride, device, model, class_names, ignore_class_names, colors, 
     return preds
 
 #%%
-print('[Check presence of traffic light]')
+print('[Check the presence of traffic light]')
 isTrafficLight = False
 
 while True:
@@ -119,11 +119,11 @@ while True:
     isTrafficLight = False
     break
   else:
-    print("Please enter valid key")
+    print("Please enter a valid key")
 print('\n')
 
 #%%
-print('[Check pedestrain safe range]')
+print('[Check the pedestrain safety range]')
 _, img = cap.read()
 
 cnt = 0
