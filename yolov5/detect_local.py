@@ -44,7 +44,7 @@ cross_colors = ((255, 0, 255), (0, 0, 255), (0, 255, 0))
 cap = cv2.VideoCapture(TEST_VIDEO_PATH + 'acro2.mp4')
 
 fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
-out = cv2.VideoWriter(TEST_VIDEO_SAVE_PATH + 'output31.mp4', fourcc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
+out = cv2.VideoWriter(TEST_VIDEO_SAVE_PATH + 'output42.mp4', fourcc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
 frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
 # %%
@@ -57,20 +57,21 @@ def img_process(img, stride, device):
   img_input = img_input.float()
   img_input /= 255.
   img_input = img_input.unsqueeze(0)
+
 #%%
 def detect(img, stride, device, model, class_names, colors, annotator):
     global cx1, cy1, cx2, cy2
     # H, W, _ = img.shape
 
-    # img_input = letterbox(img, img_size, stride = stride)[0]
-    # img_input = img_input.transpose((2, 0, 1))[::-1]
-    # img_input = np.ascontiguousarray(img_input)
-    # img_input = torch.from_numpy(img_input).to(device)
-    # img_input = img_input.float()
-    # img_input /= 255.
-    # img_input = img_input.unsqueeze(0)
+    img_input = letterbox(img, img_size, stride = stride)[0]
+    img_input = img_input.transpose((2, 0, 1))[::-1]
+    img_input = np.ascontiguousarray(img_input)
+    img_input = torch.from_numpy(img_input).to(device)
+    img_input = img_input.float()
+    img_input /= 255.
+    img_input = img_input.unsqueeze(0)
 
-    img_input = img_process(img, stride, device)
+    # img_input = img_process(img, stride, device)
 
     pred = model(img_input, augment = False, visualize = False)[0]
     pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det = max_det)[0]
@@ -102,7 +103,7 @@ isFinish = False
 safe_x1, safe_y1 = 0, 0
 safe_x2, safe_y2 = 0, 0
 
-def click_event(event, x, y):
+def click_event(event, x, y, flags, param):
     global cnt, isClick, isFinish
     global safe_x1, safe_y1, safe_x2, safe_y2
     if isFinish:
@@ -174,6 +175,12 @@ for p in pred:
 cur_frame = 1
 pbar = tqdm(total=frames)
 
+green = cv2.imread('./green.png')
+yellow = cv2.imread('./yellow.png')
+red = cv2.imread('./red.png')
+rows, cols, _ = green.shape
+start = int(W / 2) - int(cols / 2)
+
 while cap.isOpened():
   ret, img = cap.read()
   if not ret:
@@ -187,16 +194,19 @@ while cap.isOpened():
   detect(img, cross_stride, cross_device, cross_model, cross_class_names, cross_colors, annotator)
   annotator.box_label([cx1, cy1, cx2, cy2], '횡단보도', color=(255, 0, 255))
 
-  result_img = annotator.result()
+  img = annotator.result()
+  result_img = img.copy()
   cv2.rectangle(result_img, (int(safe_x1), int(safe_y1)), (int(safe_x2), int(cy1)), (255, 255, 255), 3)
+  result_img[25:25+rows, start:start+cols] = green
 
   if peds:
     for ped in peds:
       px1, py1, px2, py2 = ped
-      if int(safe_y1) <= int(py2) <= int(cy1) and int(safe_x1) <= int(px1) and int(px2) <= int(safe_x2):
-        cv2.putText(result_img, "Caution!!", (150, 150), cv2.FONT_HERSHEY_PLAIN, 12, (0, 255, 255), 6, cv2.LINE_AA)
       if int(cy1) <= int(py2) <= int(cx2) and int(cx1) <= int(px1) and int(px2) <= int(cx2):
-        cv2.putText(result_img, "Warning!!", (150, 300), cv2.FONT_HERSHEY_PLAIN, 12, (0, 0, 255), 6, cv2.LINE_AA)
+        result_img[25:25+rows, start:start+cols] = red
+        break
+      if int(safe_y1) <= int(py2) <= int(cy1) and int(safe_x1) <= int(px1) and int(px2) <= int(safe_x2):
+        result_img[25:25+rows, start:start+cols] = yellow
 
 
   out.write(result_img)
