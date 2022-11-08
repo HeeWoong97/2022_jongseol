@@ -30,6 +30,7 @@ classes = None
 agnostic_nms = False
 
 #%%
+print('[Car, pedestrain model info]')
 ped_device = torch.device('cpu')
 print(ped_device)
 ped_ckpt = torch.load(PED_MODEL_PATH, map_location = ped_device)
@@ -37,8 +38,10 @@ ped_model = ped_ckpt['ema' if ped_ckpt.get('cma') else 'model'].float().fuse().e
 ped_class_names = ['보행자', '차량']
 ped_stride = int(ped_model.stride.max())
 ped_colors = ((50, 50, 50), (255, 0, 0))
+print('\n')
 
 #%%
+print('[Cross, traffic light model info]')
 cross_device = torch.device('cpu')
 print(cross_device)
 cross_ckpt = torch.load(CROSS_MODEL_PATH, map_location = cross_device)
@@ -46,6 +49,7 @@ cross_model = cross_ckpt['ema' if cross_ckpt.get('cma') else 'model'].float().fu
 cross_class_names = ['횡단보도', '빨간불', '초록불']
 cross_stride = int(cross_model.stride.max())
 cross_colors = ((255, 0, 255), (0, 0, 255), (0, 255, 0))
+print('\n')
 
 #%%
 cap = cv2.VideoCapture(TEST_VIDEO_PATH + TEST_VIDEO)
@@ -102,6 +106,24 @@ def detect(img, stride, device, model, class_names, ignore_class_names, colors, 
     return preds
 
 #%%
+print('[Check presence of traffic light]')
+isTrafficLight = False
+
+while True:
+  print('Is there traffic light? [y/n]')
+  ans = input()
+  if ans == 'y' or ans == 'Y':
+    isTrafficLight = True
+    break
+  elif ans == 'n' or ans == 'N':
+    isTrafficLight = False
+    break
+  else:
+    print("Please enter valid key")
+print('\n')
+
+#%%
+print('[Check pedestrain safe range]')
 _, img = cap.read()
 
 cnt = 0
@@ -147,8 +169,10 @@ cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 print('safe_x1, safe_y1, safe_x2, safe_y2 = ', safe_x1, safe_y1, safe_x2, safe_y2)
+print('\n')
 
 #%%
+print('[Run the model]')
 # 횡단보도 찾고 고정
 ret, img = cap.read()
 peds_dict = detect(img, cross_stride, cross_device, cross_model, cross_class_names, ['차량'],cross_colors)
@@ -161,6 +185,7 @@ pbar = tqdm(total=frames)
 green = cv2.imread('./green.png')
 yellow = cv2.imread('./yellow.png')
 red = cv2.imread('./red.png')
+
 rows, cols, _ = green.shape
 H, W, _ = img.shape
 start_row = int(H / 45)
@@ -176,7 +201,9 @@ while cap.isOpened():
   annotator = Annotator(img.copy(), line_width = 3, example = '한글', font = 'data/malgun.ttf')
 
   peds_dict = detect(img, ped_stride, ped_device, ped_model, ped_class_names, ['차량'], ped_colors, annotator)
-  light_dict = detect(img, cross_stride, cross_device, cross_model, cross_class_names, ['횡단보도'],cross_colors, annotator)
+
+  ignore_list = ['횡단보도'] if isTrafficLight is True else ['횡단보도', '초록불', '빨간불']
+  light_dict = detect(img, cross_stride, cross_device, cross_model, cross_class_names, ignore_list, cross_colors, annotator)
   annotator.box_label([cx1, cy1, cx2, cy2], '횡단보도', color=(255, 0, 255))
 
   img = annotator.result()
@@ -184,7 +211,8 @@ while cap.isOpened():
   cv2.rectangle(result_img, (int(safe_x1), int(safe_y1)), (int(safe_x2), int(cy1)), (255, 255, 255), 3)
 
   peds = peds_dict['보행자']
-  cross_light_color = '초록불' if len(light_dict['초록불']) else '빨간불'
+
+  cross_light_color = ('초록불' if len(light_dict['초록불']) else '빨간불') if isTrafficLight is True else None
 
   # safety 체크 알고리즘
   in_safety, in_cross = False, False
@@ -201,12 +229,16 @@ while cap.isOpened():
     if in_cross:
       result_img[start_row:start_row+rows, start_col:start_col+cols] = red
     elif in_safety:
-      if cross_light_color == '초록불':
+      if cross_light_color == None:
+        result_img[start_row:start_row+rows, start_col:start_col+cols] = red
+      elif cross_light_color == '초록불':
         result_img[start_row:start_row+rows, start_col:start_col+cols] = red
       else:
         result_img[start_row:start_row+rows, start_col:start_col+cols] = yellow
-    else:       
-      if cross_light_color == '초록불':
+    else:   
+      if cross_light_color == None:
+        result_img[start_row:start_row+rows, start_col:start_col+cols] = yellow
+      elif cross_light_color == '초록불':
         result_img[start_row:start_row+rows, start_col:start_col+cols] = yellow
       else:
         result_img[start_row:start_row+rows, start_col:start_col+cols] = green
