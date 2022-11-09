@@ -164,7 +164,6 @@
             * detect.py
                 * 입력 영상에서 횡단보도 인식을 통해 보행자, 차량에게 안전 정보를 알려주는 코드
                 * 인식 모델로는 횡단보도, 차량 인식 모델을 각각 사용한다
-                * 핵심 코드
             * detect_show_split.py
                 * 입력 영상에서 횡단보도 인식을 통해 보행자, 차량에게 안전 정보를 알려주는 코드
         * train/
@@ -174,29 +173,29 @@
                 * car_pedestrain/
                     * 차량, 보행자 인식 모델 관련
                     * YOLO_train.py
-                        * haha
+                        * yolo 모델을 이용하여 모델을 학습하는 코드
                     * convert.py
-                        * hoho
+                        * AI-HUB에서 제공한 label파일을 yolo 형식으로 변환하는 코드
                     * convert_train.py
-                        * huhu
+                        * train set의 label을 yolo 형식으로 변환하는 코드
                     * convert_valid.py
-                        * hihi
+                        * valid set의 label을 yolo 형식으로 변환하는 코드
                     * draw_box.py
-                        * hyhy
+                        * 변환이 올바르게 되었는지 확인하기 위해 변환된 label 형식으로 사진상에 box를 그려보는 코드
                 * cross/
                     * 횡단보도, 빨간불, 초록불 인식 모델 관련
                     * YOLO_train.py
-                        * haha
+                        * yolo 모델을 이용하여 모델을 학습하는 코드
                     * convert_class.py
-                        * hoho
+                        * 차량, 보행자 데이터와 횡단보도, 신호등 모델을 합칠 때 클래스 번호를 변환하는 코드
                     * convert_train.py
-                        * huhu
+                        * train set의 label을 yolo 형식으로 변환하는 코드
                     * convert_valid.py
-                        * hihi
+                        * valid set의 label을 yolo 형식으로 변환하는 코드
                     * preprocess.py
-                        * hwhw
+                        * dataset을 train, valid로 나누고 label을 yolo 형식으로 변환하는 코드
                     * split.py
-                        * jwjw
+                        * dataset을 train, valid로 나누는 코드
     * data/
         * yolo를 통한 학습 시 데이터들의 정보를 알려주는 파일들
         * 각 데이터셋의 경로가 담긴 yaml형식의 파일들
