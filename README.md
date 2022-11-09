@@ -45,7 +45,7 @@
 
                 return img_input
             ```
-                * 설명설명설명
+            * 설명설명설명
             ``` python
             # predict classes
             def pred_classes(pred, class_names:list, ignore_class_names:list, annotator, colors)->dict:
@@ -65,7 +65,7 @@
 
                 return preds
             ```
-                * 설명설명설명
+            * 설명설명설명
             ``` python
             def detect(img, stride, device, model, class_names, ignore_class_names, colors, annotator=None):
                 global cx1, cy1, cx2, cy2
@@ -81,7 +81,7 @@
 
                 return preds
             ```
-                * 설명설명설명
+            * 설명설명설명
         * 
 * safe_turn/
     * 기타 시도한 코드들
