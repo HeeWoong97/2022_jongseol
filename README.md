@@ -82,7 +82,7 @@
 
                 return preds
             ```
-        * **안전범위 관련 코드**
+        * **안전범위 설정 관련 코드**
             ``` python
             safe_x1, safe_y1 = 0, 0
             safe_x2, safe_y2 = 0, 0
@@ -114,6 +114,40 @@
                         safe_y1, safe_y2 = y, y
                     cnt += 1
                     isClick = False
+            ```
+        * **안전범위를 통한 메인 알고리즘**
+            ```python
+            # safety 체크 알고리즘
+            in_safety, in_cross = False, False
+
+            if len(peds):
+                for ped in peds:
+                px1, py1, px2, py2 = ped
+
+                _in_safety = int(safe_y1) <= int(py2) <= int(cy1) and int(safe_x1) <= int(px1) and int(px2) <= int(safe_x2)
+                _in_cross = int(cy1) <= int(py2) <= int(cx2) and int(cx1) <= int(px1) and int(px2) <= int(cx2)
+                in_safety, in_cross = in_safety or _in_safety, in_cross or _in_cross
+
+                # red : stop!; yellow : stop and go; green : drive slowly
+                if in_cross:
+                result_img[start_row:start_row+rows, start_col:start_col+cols] = red
+                elif in_safety:
+                if cross_light_color == None:
+                    result_img[start_row:start_row+rows, start_col:start_col+cols] = red
+                elif cross_light_color == '초록불':
+                    result_img[start_row:start_row+rows, start_col:start_col+cols] = red
+                else:
+                    result_img[start_row:start_row+rows, start_col:start_col+cols] = yellow
+                else:   
+                if cross_light_color == None:
+                    result_img[start_row:start_row+rows, start_col:start_col+cols] = yellow
+                elif cross_light_color == '초록불':
+                    result_img[start_row:start_row+rows, start_col:start_col+cols] = yellow
+                else:
+                    result_img[start_row:start_row+rows, start_col:start_col+cols] = green
+            else:
+                # no ped
+                result_img[start_row:start_row+rows, start_col:start_col+cols] = green
             ```
 * safe_turn/
     * 기타 시도한 코드들
