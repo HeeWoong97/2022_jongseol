@@ -32,6 +32,7 @@
     * **detect_local.py**
         * 메인 알고리즘 코드
         * **prediction 관련 코드**
+            * 이미지 프로세싱 관련
             ``` python
             # input image processing
             def img_process(img, stride, device):
@@ -45,8 +46,7 @@
 
                 return img_input
             ```
-            * 설명설명설명
-
+            * class 검출 관련
             ``` python
             # predict classes
             def pred_classes(pred, class_names:list, ignore_class_names:list, annotator, colors)->dict:
@@ -66,8 +66,7 @@
 
                 return preds
             ```
-            * 설명설명설명
-
+            * model에 이미지를 넣고 인식
             ``` python
             def detect(img, stride, device, model, class_names, ignore_class_names, colors, annotator=None):
                 global cx1, cy1, cx2, cy2
