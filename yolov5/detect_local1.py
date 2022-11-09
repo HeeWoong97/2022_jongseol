@@ -120,7 +120,7 @@ while True:
     break
   else:
     print("Please enter a valid key")
-print('\n')
+print()
 
 #%%
 print('[Check the pedestrain safety range]')
@@ -145,7 +145,7 @@ def click_event(event, x, y, flags, param):
         elif cnt == 2:
             print('Click the upper position')
         elif cnt == 3:
-            print('Finish... Please press the \'0\'')
+            print('Finish... Please press the \'q\'')
             isFinish = True
             return
         isClick = True
@@ -165,11 +165,11 @@ print('Click the left down position')
 
 cv2.imshow('image', img)
 cv2.setMouseCallback('image', click_event)
-cv2.waitKey(0)
+cv2.waitKey('q')
 cv2.destroyAllWindows()
 
 print('safe_x1, safe_y1, safe_x2, safe_y2 = ', safe_x1, safe_y1, safe_x2, safe_y2)
-print('\n')
+print()
 
 #%%
 print('[Run the model]')
@@ -202,8 +202,8 @@ while cap.isOpened():
 
   peds_dict = detect(img, ped_stride, ped_device, ped_model, ped_class_names, ['차량'], ped_colors, annotator)
 
-  ignore_list = ['횡단보도'] if isTrafficLight is True else ['횡단보도', '초록불', '빨간불']
-  light_dict = detect(img, cross_stride, cross_device, cross_model, cross_class_names, ignore_list, cross_colors, annotator)
+  if isTrafficLight:
+    light_dict = detect(img, cross_stride, cross_device, cross_model, cross_class_names, ['횡단보도'], cross_colors, annotator)
   annotator.box_label([cx1, cy1, cx2, cy2], '횡단보도', color=(255, 0, 255))
 
   img = annotator.result()
@@ -212,7 +212,9 @@ while cap.isOpened():
 
   peds = peds_dict['보행자']
 
-  cross_light_color = ('초록불' if len(light_dict['초록불']) else '빨간불') if isTrafficLight is True else None
+  # None or red light
+  # 신호등이 없으면 무조건 빨간불 처리
+  cross_light_color = '초록불' if isTrafficLight and len(light_dict['초록불']) else '빨간불'
 
   # safety 체크 알고리즘
   in_safety, in_cross = False, False
