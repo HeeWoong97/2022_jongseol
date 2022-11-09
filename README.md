@@ -31,7 +31,7 @@
     * 메인 코드가 위치
     * **detect_local.py**
         * 메인 알고리즘 코드
-        * **prediction 관련 코드**
+        * **prediction 관련 주요코드**
             * 이미지 프로세싱 관련
             ``` python
             # input image processing
@@ -201,4 +201,46 @@
         * yolo를 통한 학습 시 데이터들의 정보를 알려주는 파일들
         * 각 데이터셋의 경로가 담긴 yaml형식의 파일들
 ***
-## 실행 결과
+## 실행 방법 및 결과
+* 모델 학습 방법
+    * 차량, 보행자 모델 학습
+        ```
+        $ python safe_turn/code/train/car_pedestrain/YOLO_train.py
+        ```
+    * 횡단보도, 신호등 모델 학습
+        ```
+        $ python safe_turn/code/train/cross/YOLO_train.py
+        ```
+* 모델 실행 방법
+    1. 코드 실행
+        ```
+        $ python yolov5/detect_local.py
+        ```
+    2. 신호등 존재 여부 입력
+        ```
+        [Check presence of traffic light]
+        Is there traffic light? [y/n]
+        ```
+        존재할 경우 y, 존재하지 않을 경우 n
+    3. 안전범위 설정
+        ```
+        [Check the pedestrain safety range]
+        Click the left down position
+        351   407
+        Click the right down position
+        1049   401
+        Click the upper position
+        541   345
+        Finish... Please press the '0'
+        safe_x1, safe_y1, safe_x2, safe_y2 =  351 345 1049 345
+        ```
+        안전범위의 왼쪽 아래 클릭
+        안전범위의 오른쪽 아래 클릭
+        안전범위의 위쪽 부분 클릭
+        '0'을 입력하여 안전범위 설정 종료
+    4. 모델이 실행된다
+        ```
+        [Run the model]
+        31%|█████████████████████████████████████████                                                                                            | 738/2390 [01:51<04:06,  6.70it/s]
+        ```
+***
