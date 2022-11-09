@@ -32,55 +32,55 @@
     * **detect_local.py**
         * 메인 알고리즘 코드
         * **prediction 관련 코드**
-            * ``` python
-                # input image processing
-                def img_process(img, stride, device):
-                    img_input = letterbox(img, img_size, stride = stride)[0]
-                    img_input = img_input.transpose((2, 0, 1))[::-1]
-                    img_input = np.ascontiguousarray(img_input)
-                    img_input = torch.from_numpy(img_input).to(device)
-                    img_input = img_input.float()
-                    img_input /= 255.
-                    img_input = img_input.unsqueeze(0)
+            ``` python
+            # input image processing
+            def img_process(img, stride, device):
+                img_input = letterbox(img, img_size, stride = stride)[0]
+                img_input = img_input.transpose((2, 0, 1))[::-1]
+                img_input = np.ascontiguousarray(img_input)
+                img_input = torch.from_numpy(img_input).to(device)
+                img_input = img_input.float()
+                img_input /= 255.
+                img_input = img_input.unsqueeze(0)
 
-                    return img_input
-                ```
+                return img_input
+            ```
                 * 설명설명설명
-            * ``` python
-                # predict classes
-                def pred_classes(pred, class_names:list, ignore_class_names:list, annotator, colors)->dict:
-                    assert class_names == ped_class_names or class_names == cross_class_names, 'given class names are not allowed'
+            ``` python
+            # predict classes
+            def pred_classes(pred, class_names:list, ignore_class_names:list, annotator, colors)->dict:
+                assert class_names == ped_class_names or class_names == cross_class_names, 'given class names are not allowed'
 
-                    preds = {class_name:[] for class_name in class_names if class_name not in ignore_class_names}
+                preds = {class_name:[] for class_name in class_names if class_name not in ignore_class_names}
 
-                    for p in pred:
-                        class_name = class_names[int(p[5])]
-                        # x1, y1, x2, y2
-                        position = p[:4]
+                for p in pred:
+                    class_name = class_names[int(p[5])]
+                    # x1, y1, x2, y2
+                    position = p[:4]
 
-                        if class_name not in ignore_class_names:
-                            preds[class_name].append(position)
-                        if annotator is not None:
-                            annotator.box_label(position, '%s %d' % (class_name, float(p[4]) * 100), color=colors[int(p[5])])
+                    if class_name not in ignore_class_names:
+                        preds[class_name].append(position)
+                    if annotator is not None:
+                        annotator.box_label(position, '%s %d' % (class_name, float(p[4]) * 100), color=colors[int(p[5])])
 
-                    return preds
-                ```
+                return preds
+            ```
                 * 설명설명설명
-            * ``` python
-                def detect(img, stride, device, model, class_names, ignore_class_names, colors, annotator=None):
-                    global cx1, cy1, cx2, cy2
+            ``` python
+            def detect(img, stride, device, model, class_names, ignore_class_names, colors, annotator=None):
+                global cx1, cy1, cx2, cy2
 
-                    img_input = img_process(img, stride, device)
+                img_input = img_process(img, stride, device)
 
-                    pred = model(img_input, augment = False, visualize = False)[0]
-                    pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det = max_det)[0]
-                    pred = pred.cpu().numpy()
+                pred = model(img_input, augment = False, visualize = False)[0]
+                pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det = max_det)[0]
+                pred = pred.cpu().numpy()
 
-                    pred[:, :4] = scale_coords(img_input.shape[2:], pred[:, :4], img.shape).round()
-                    preds = pred_classes(pred, class_names, ignore_class_names, annotator, colors)
+                pred[:, :4] = scale_coords(img_input.shape[2:], pred[:, :4], img.shape).round()
+                preds = pred_classes(pred, class_names, ignore_class_names, annotator, colors)
 
-                    return preds
-                ```
+                return preds
+            ```
                 * 설명설명설명
         * 
 * safe_turn/
