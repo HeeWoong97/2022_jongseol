@@ -27,8 +27,27 @@
 * 이후에 google drive의 링크를 공유하는 등의 방법을 통해 원활한 테스트가 진행될 수 있도록 하겠습니다
 ***
 ## 코드의 구조
+* yolov5/
+    * 메인 코드가 위치
+    * **detect_local.py**
+        * 메인 알고리즘 코드
+        * prediction 관련 코드 설명
+        * 
+            ``` python
+            # input image processing
+            def img_process(img, stride, device):
+                img_input = letterbox(img, img_size, stride = stride)[0]
+                img_input = img_input.transpose((2, 0, 1))[::-1]
+                img_input = np.ascontiguousarray(img_input)
+                img_input = torch.from_numpy(img_input).to(device)
+                img_input = img_input.float()
+                img_input /= 255.
+                img_input = img_input.unsqueeze(0)
+
+                return img_input
+            ```
 * safe_turn/
-    * 본 팀이 구현한 코드
+    * 기타 시도한 코드들
     * code/
         * 데이터를 학습시키거나 분리하는 코드
         * detect/
