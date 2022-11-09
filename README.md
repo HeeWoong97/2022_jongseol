@@ -82,8 +82,39 @@
 
                 return preds
             ```
-            * 설명설명설명
-        * 
+        * **안전범위 관련 코드**
+            ``` python
+            safe_x1, safe_y1 = 0, 0
+            safe_x2, safe_y2 = 0, 0
+
+            def click_event(event, x, y, flags, param):
+                global cnt, isClick, isFinish
+                global safe_x1, safe_y1, safe_x2, safe_y2
+                if isFinish:
+                    return
+
+                if isClick is False:
+                    if cnt == 1:
+                        print('Click the right down position')
+                    elif cnt == 2:
+                        print('Click the upper position')
+                    elif cnt == 3:
+                        print('Finish... Please press the \'0\'')
+                        isFinish = True
+                        return
+                    isClick = True
+                
+                if event == cv2.EVENT_LBUTTONDOWN:
+                    print(x, ' ', y)
+                    if cnt == 0:
+                        safe_x1 = x
+                    elif cnt == 1:
+                        safe_x2 = x
+                    elif cnt == 2:
+                        safe_y1, safe_y2 = y, y
+                    cnt += 1
+                    isClick = False
+            ```
 * safe_turn/
     * 기타 시도한 코드들
     * code/
