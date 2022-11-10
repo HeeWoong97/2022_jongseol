@@ -230,13 +230,13 @@
         1049   401
         Click the upper position
         541   345
-        Finish... Please press the '0'
+        Finish... Please press any key...
         safe_x1, safe_y1, safe_x2, safe_y2 =  351 345 1049 345
         ```
         안전범위의 왼쪽 아래 클릭
         안전범위의 오른쪽 아래 클릭
         안전범위의 위쪽 부분 클릭
-        '0'을 입력하여 안전범위 설정 종료
+        키를 입력하여 안전범위 설정 종료
     4. 모델이 실행된다
         ```
         [Run the model]

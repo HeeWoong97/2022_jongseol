@@ -145,7 +145,7 @@ def click_event(event, x, y, flags, param):
         elif cnt == 2:
             print('Click the upper position')
         elif cnt == 3:
-            print('Finish... Please press the \'q\'')
+            print('Finish... Please press any key...')
             isFinish = True
             return
         isClick = True
@@ -165,7 +165,7 @@ print('Click the left down position')
 
 cv2.imshow('image', img)
 cv2.setMouseCallback('image', click_event)
-cv2.waitKey('q')
+cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 print('safe_x1, safe_y1, safe_x2, safe_y2 = ', safe_x1, safe_y1, safe_x2, safe_y2)
